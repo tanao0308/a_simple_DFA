@@ -11,7 +11,7 @@ class DFA:
         f: 转移函数
         S: 起始状态，非集合
         Z: 正确结束状态集合
-        :param regex: string类型的正则表达式，只涉及[0-9*.]
+        :param regex: string类型的正则表达式，只涉及[a-z*.]
         '''
         self.Sigma, self.num_sigma = get_Sigma('dfa')
         self.f, self.nfa = {}, NFA(regex)
@@ -56,17 +56,13 @@ class DFA:
             T2 = self.dfs(k2, sigma)
             if T2:
                 T = T.union(T2)
-                T.add(k2)
         return T
 
     def match(self, str):
         P = self.S
-        print(P)
         for c in str:
             P = self.f[frozenset(P)][get_sigma(c)]
-            print(P)
             if P is None:
-                print("P is None.")
                 return False
         if self.Z - P:
             return False

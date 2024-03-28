@@ -11,3 +11,5 @@ while True:
         print("Match.")
     else:
         print("Not match.")
+
+# 'abb', 'a*.'

@@ -10,7 +10,7 @@ class NFA:
         f: 转移函数
         S: 起始状态集合
         Z: 正确结束状态集合
-        :param regex: string类型的正则表达式，只涉及[0-9*.]
+        :param regex: string类型的正则表达式，只涉及[a-z*.]
         """
         self.Sigma, self.num_sigma = get_Sigma()
         self.f = {}
@@ -53,16 +53,16 @@ class NFA:
         self.f.update({k: k0_f})
         self.S, self.Z = {0}, {k}
 
-        if __name__ == "__main__":
-            print('Sigma:')
-            print(self.Sigma)
-            print('f:')
-            for k, k_f in self.f.items():
-                print(k, k_f)
-            print('S:')
-            print(self.S)
-            print('Z:')
-            print(self.Z)
+    def print(self):
+        print('Sigma:')
+        print(self.Sigma)
+        print('f:')
+        for k, k_f in self.f.items():
+            print(k, k_f)
+        print('S:')
+        print(self.S)
+        print('Z:')
+        print(self.Z)
 
     def tran(self, set_s, sigma):
         set_t = set()
