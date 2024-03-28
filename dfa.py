@@ -41,36 +41,39 @@ class DFA:
 
     def get_state(self, S, sigma):
         T = set()
+        if sigma == get_epsilon():
+            T = S
         for k in S:
             T = T.union(self.dfs(k, sigma))
         return T
 
     def dfs(self, k, sigma):
-
-        if sigma == get_epsilon():
-            T = {k}
-        else:
-            T = set()
+        T = set()
         for k2 in self.nfa.f[k][sigma]:
             T = T.union(self.dfs(k2, get_epsilon()))
             T.add(k2)
         for k2 in self.nfa.f[k][get_epsilon()]:
-            T = T.union(self.dfs(k2, sigma))
-            T.add(k2)
+            T2 = self.dfs(k2, sigma)
+            if T2:
+                T = T.union(T2)
+                T.add(k2)
         return T
 
     def match(self, str):
         P = self.S
+        print(P)
         for c in str:
             P = self.f[frozenset(P)][get_sigma(c)]
+            print(P)
             if P is None:
+                print("P is None.")
                 return False
-        if P in self.Z:
-            return True
-        else:
+        if self.Z - P:
             return False
+        else:
+            return True
 
 
 if __name__ == "__main__":
-    dfa = DFA("0*01")
+    dfa = DFA(".*")
     dfa.print()
