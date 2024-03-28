@@ -1,35 +1,83 @@
-import numpy as np
+from utils import *
 
 
 class NFA:
     def __init__(self, regex):
-        '''
+        """
         NFA的构造函数
         K: 状态集合
         Sigma: 字母表集合[a-z'']
-        f: 转移数组
+        f: 转移函数
         S: 起始状态集合
         Z: 正确结束状态集合
-        :param regex: string类型的正则表达式，只涉及[a-z*.]
-        '''
-        self.K = np.array(list(range(len(regex) + 1)), dtype=np.int64)
-        self.Sigma = np.array(list(range(26 + 1)), dtype=np.int64)
-        # self.Sigma = np.zeros([26], dtype=np.int64)
-        self.f = np.zeros([len(self.K), 26], dtype=np.int64)
-        self.S = np.array([0])
-        self.Z = np.array([len(self.K) - 1])
+        :param regex: string类型的正则表达式，只涉及[0-9*.]
+        """
+        self.num_k, self.num_sigma = 0, 10 + 1
 
+        self.K = set()
+        self.Sigma = set()
+        for sigma in range(get_epsilon()):
+            self.Sigma.add(sigma)
+
+        self.f = []
+        k, self.num_k = 0, 1
         for i in range(len(regex)):
-            for sigma in self.Sigma:
-                self.f[i][sigma] = -1
-            if 
+            if regex[i] == '*':
+                continue
 
+            elif i + 1 < len(regex) and regex[i + 1] == '*':
+                k0_f, k1_f = [set() for _ in range(self.num_sigma)], [set() for _ in range(self.num_sigma)]
+                k0_f[get_epsilon()].add(k + 1)
+                k1_f[get_epsilon()].add(k + 2)
+                if regex[i] == '.':
+                    for sigma in range(self.num_sigma - 1):
+                        k1_f[sigma].add(k + 1)
+                else:
+                    k1_f[get_sigma(regex[i])].add(k + 1)
+                self.f.append(k0_f)
+                self.f.append(k1_f)
+                k += 2
+                self.num_k += 2
+
+            elif regex[i] == '.':
+                k0_f = [set() for _ in range(self.num_sigma)]
+                for sigma in range(self.num_sigma - 1):
+                    k0_f[sigma].add(k + 1)
+                self.f.append(k0_f)
+                k += 1
+                self.num_k += 1
+
+            else:
+                k0_f = [set() for _ in range(self.num_sigma)]
+                k0_f[get_sigma(regex[i])].add(k + 1)
+                self.f.append(k0_f)
+                k += 1
+                self.num_k += 1
+
+        k0_f = [set() for _ in range(self.num_sigma)]
+        self.f.append(k0_f)
+        self.S, self.Z = set(), set()
+        self.S.add(0)
+        self.Z.add(k)
+
+        print('K:')
         print(self.K)
+        print('Sigma:')
         print(self.Sigma)
-        print(self.f)
+        print('f:')
+        for k_f in self.f:
+            print(k_f)
+        print('S:')
         print(self.S)
+        print('Z:')
         print(self.Z)
+
+    def tran(self, set_s, sigma):
+        set_t = set()
+        for k in set_s:
+            set_t.union(self.f[k][sigma])
+        return set_t
 
 
 if __name__ == "__main__":
-    nfa = NFA("a*ab")
+    nfa = NFA("0*01")

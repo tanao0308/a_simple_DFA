@@ -1,4 +1,3 @@
-import numpy as np
 from dfa import DFA
 
 print("input regex>>>")
