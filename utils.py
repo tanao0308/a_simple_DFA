@@ -1,8 +1,18 @@
 import numpy as np
 
 
+def get_Sigma(cls='nfa'):
+    Sigma = set()
+    if cls == 'dfa':
+        for sigma in range(10):
+            Sigma.add(sigma)
+    else:
+        for sigma in range(11):
+            Sigma.add(sigma)
+    return Sigma, len(Sigma)
+
+
 def get_sigma(c):
-    print(c, ord(c) - ord('0'))
     return ord(c) - ord('0')
 
 

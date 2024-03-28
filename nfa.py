@@ -12,21 +12,16 @@ class NFA:
         Z: 正确结束状态集合
         :param regex: string类型的正则表达式，只涉及[0-9*.]
         """
-        self.num_k, self.num_sigma = 0, 10 + 1
+        self.Sigma, self.num_sigma = get_Sigma()
+        self.f = {}
 
-        self.K = set()
-        self.Sigma = set()
-        for sigma in range(get_epsilon()):
-            self.Sigma.add(sigma)
-
-        self.f = []
         k, self.num_k = 0, 1
         for i in range(len(regex)):
             if regex[i] == '*':
                 continue
 
             elif i + 1 < len(regex) and regex[i + 1] == '*':
-                k0_f, k1_f = [set() for _ in range(self.num_sigma)], [set() for _ in range(self.num_sigma)]
+                k0_f, k1_f = [set() for _ in self.Sigma], [set() for _ in self.Sigma]
                 k0_f[get_epsilon()].add(k + 1)
                 k1_f[get_epsilon()].add(k + 2)
                 if regex[i] == '.':
@@ -34,8 +29,8 @@ class NFA:
                         k1_f[sigma].add(k + 1)
                 else:
                     k1_f[get_sigma(regex[i])].add(k + 1)
-                self.f.append(k0_f)
-                self.f.append(k1_f)
+                self.f.update({k: k0_f})
+                self.f.update({k + 1: k1_f})
                 k += 2
                 self.num_k += 2
 
@@ -43,34 +38,31 @@ class NFA:
                 k0_f = [set() for _ in range(self.num_sigma)]
                 for sigma in range(self.num_sigma - 1):
                     k0_f[sigma].add(k + 1)
-                self.f.append(k0_f)
+                self.f.update({k: k0_f})
                 k += 1
                 self.num_k += 1
 
             else:
                 k0_f = [set() for _ in range(self.num_sigma)]
                 k0_f[get_sigma(regex[i])].add(k + 1)
-                self.f.append(k0_f)
+                self.f.update({k: k0_f})
                 k += 1
                 self.num_k += 1
 
         k0_f = [set() for _ in range(self.num_sigma)]
-        self.f.append(k0_f)
-        self.S, self.Z = set(), set()
-        self.S.add(0)
-        self.Z.add(k)
+        self.f.update({k: k0_f})
+        self.S, self.Z = {0}, {k}
 
-        print('K:')
-        print(self.K)
-        print('Sigma:')
-        print(self.Sigma)
-        print('f:')
-        for k_f in self.f:
-            print(k_f)
-        print('S:')
-        print(self.S)
-        print('Z:')
-        print(self.Z)
+        if __name__ == "__main__":
+            print('Sigma:')
+            print(self.Sigma)
+            print('f:')
+            for k, k_f in self.f.items():
+                print(k, k_f)
+            print('S:')
+            print(self.S)
+            print('Z:')
+            print(self.Z)
 
     def tran(self, set_s, sigma):
         set_t = set()
