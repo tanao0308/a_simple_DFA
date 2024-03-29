@@ -6,7 +6,7 @@ class NFA:
         """
         NFA的构造函数
         K: 状态集合
-        Sigma: 字母表集合[a-z'']
+        Sigma: 字母表集合[a-z, epsilon]
         f: 转移函数
         S: 起始状态集合
         Z: 正确结束状态集合
@@ -52,24 +52,3 @@ class NFA:
         k0_f = [set() for _ in range(self.num_sigma)]
         self.f.update({k: k0_f})
         self.S, self.Z = {0}, {k}
-
-    def print(self):
-        print('Sigma:')
-        print(self.Sigma)
-        print('f:')
-        for k, k_f in self.f.items():
-            print(k, k_f)
-        print('S:')
-        print(self.S)
-        print('Z:')
-        print(self.Z)
-
-    def tran(self, set_s, sigma):
-        set_t = set()
-        for k in set_s:
-            set_t.union(self.f[k][sigma])
-        return set_t
-
-
-if __name__ == "__main__":
-    nfa = NFA("0*01")
