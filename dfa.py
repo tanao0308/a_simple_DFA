@@ -1,3 +1,5 @@
+import networkx as nx
+import matplotlib.pyplot as plt
 from nfa import NFA
 from utils import *
 
@@ -60,3 +62,22 @@ class DFA:
             return False
         else:
             return True
+
+    def draw(self):
+        G = nx.MultiDiGraph()
+
+        for k, k_f in self.f.items():
+            for sigma in self.Sigma:
+                if k_f[sigma]:
+                    G.add_edge(tuple(k), tuple(k_f[sigma]), tra=get_char(sigma))
+
+        seed = 0
+        pos = nx.spring_layout(G, seed=seed)
+        nx.draw(G, pos=pos, node_size=0, node_shape='s', arrowstyle='-|>', arrowsize=15)
+        nx.draw_networkx_labels(G, pos, font_size=12, font_weight='bold', verticalalignment='top')
+        nx.draw_networkx_edge_labels(G, pos, font_size=8, label_pos=0.3, verticalalignment='bottom')
+        plt.show()
+
+if __name__ == "__main__":
+    dfa = DFA("a*b")
+    dfa.draw()

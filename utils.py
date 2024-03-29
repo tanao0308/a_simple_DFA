@@ -15,6 +15,12 @@ def get_Sigma(cls='nfa'):
 def get_sigma(c):
     return ord(c) - ord('a')
 
+def get_char(sigma):
+    if sigma != 26:
+        return chr(sigma + ord('a'))
+    else:
+        return 'ε'
+
 
 def get_epsilon():
     return 26

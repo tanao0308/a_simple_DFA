@@ -1,13 +1,27 @@
 from dfa import DFA
 
-print("input regex>>>", end=' ')
-regex = input()
-dfa = DFA(regex)
+
+dfa = DFA("regex")
 
 while True:
-    print("Input string>>>", end=' ')
+    print(">>>", end=' ')
     str = input()
-    if dfa.match(str):
-        print("Match.")
+
+    if str[0] == 'R':
+        str = str[1:]
+        dfa = DFA(str)
+        print("regex set.")
+    elif str == "exit":
+        print("bye.")
+        break
+    elif str == "draw dfa":
+        print("dfa displaying.")
+        dfa.draw()
+    elif str == "draw nfa":
+        print("nfa displaying.")
+        dfa.nfa.draw()
     else:
-        print("Not match.")
+        if dfa.match(str):
+            print("Match.")
+        else:
+            print("Not match.")
